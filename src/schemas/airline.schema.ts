@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import {Status, FlightType} from '../interfaces/airline.interface';
 
 export const AirLineSchema = new mongoose.Schema({
   idAirCompany: String,
@@ -10,8 +9,8 @@ export const AirLineSchema = new mongoose.Schema({
     toIdAirPort: String  
   },
   note: String,
-  status: Status,
-  lightType: FlightType,
+  lightType: String,
+  status: String,
   schedule: {
     days: [], // 0..7 
     startFly: Date,
