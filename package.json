@@ -24,6 +24,7 @@
     "@nestjs/jwt": "^6.0.0",
     "@nestjs/mongoose": "^6.0.0",
     "@nestjs/passport": "^6.0.0",
+    "class-validator": "^0.9.1",
     "hash.js": "^1.1.7",
     "mongoose": "^5.4.19",
     "passport": "^0.4.0",

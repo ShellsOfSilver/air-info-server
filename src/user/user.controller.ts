@@ -3,7 +3,7 @@ import {
     Get, Query, 
     Param, Body,Post,
     Delete, Put, Req, UseGuards} from "@nestjs/common";
-import { User } from '../interfaces/user.interface';
+import { User, IUser } from '../interfaces/user.interface';
 import { UserService } from "./user.service";
 import { AuthGuard } from "@nestjs/passport";
     
@@ -13,7 +13,7 @@ export class UserController {
   constructor(private readonly authService: UserService) {}
 
   @Post('singUp')
-  async singUp(@Req() res: any, @Body() user: User): Promise<User> {  
+  async singUp(@Req() res: any, @Body() user: IUser): Promise<User> {  
     return this.authService.signUp(user, res.headers); 
   }
 
@@ -36,7 +36,7 @@ export class UserController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
-  async update(@Param('id') id: string, @Body() user: User): Promise<User> {
+  async update(@Param('id') id: string, @Body() user: IUser): Promise<User> {
     return this.authService.updateUser(id, user);
   }
 
