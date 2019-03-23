@@ -41,8 +41,8 @@ export interface IDirection{
 }
 
 export interface ISchedule{
-    startFly: Date;
-    endFly: Date;
+    startFly: String;
+    endFly: String;
     days: [];
 }
 
@@ -67,11 +67,11 @@ export class Direction {
 
 export class Schedule extends Direction{
     
-    @IsDateString()
-    readonly startFly: Date;
+    @IsString()
+    readonly startFly: String;
 
-    @IsDateString()
-    readonly endFly: Date;
+    @IsString()
+    readonly endFly: String;
 
     @ArrayNotEmpty()
     @ArrayUnique()
@@ -79,8 +79,8 @@ export class Schedule extends Direction{
 
     constructor(
         airSchedule: ISchedule = {
-          startFly: new Date(),
-          endFly: new Date(),
+          startFly: "", 
+          endFly: "",
           days: []
         },
         airDirection)
@@ -130,8 +130,8 @@ export class AirLine extends Schedule{
             note: "",
             status: Status.Unknown,
             schedule: {
-                startFly: new Date(),
-                endFly: new Date(),
+                startFly: "",
+                endFly: "",
                 days: [],
                 fromIdAirPort: "",
                 toIdAirPort: ""

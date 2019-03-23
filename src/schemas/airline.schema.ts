@@ -9,11 +9,11 @@ export const AirLineSchema = new mongoose.Schema({
     toIdAirPort: String  
   },
   note: String,
-  lightType: String,
-  status: String,
+  flightType: String,
+  status: String, 
   schedule: {
     days: [], // 0..7 
-    startFly: Date,
-    endFly: Date
+    startFly: String,
+    endFly: String
   }
 });

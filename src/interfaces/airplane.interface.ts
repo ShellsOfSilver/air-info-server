@@ -1,40 +1,55 @@
-import {MinLength,MaxLength, IsString, IsInt} from "class-validator";
+import {MinLength,MaxLength, IsString, IsInt, IsNumberString, Validate} from "class-validator";
+import {ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments} from "class-validator";
 
 export interface IAirPlane {
   readonly name: String;
-  readonly maxSpeed: Number;
-  readonly maxDistance: Number;
+  readonly maxSpeed: String;
+  readonly maxDistance: String;
   readonly description: String;
   readonly capacity: ICapacity
 }
 
+@ValidatorConstraint({ name: "customText", async: false })
+export class CustomNumber implements ValidatorConstraintInterface {
+
+    isNumeric(value) {
+      return /^\+?\d+$/.test(value);
+    }
+
+    validate(text) {
+        return this.isNumeric(text); 
+    }
+
+}
+
 export interface ICapacity {
-  readonly economy: Number;
-  readonly premiumEconomy: Number;
-  readonly business: Number;
-  readonly first: Number;
+  readonly economy: String;
+  readonly premiumEconomy: String;
+  readonly business: String;
+  readonly first: String;
 }
 
 export class Capacity {
 
-  @IsInt()
-  economy: Number;
+  
+  @Validate(CustomNumber)
+  economy: String;
 
-  @IsInt()
-  premiumEconomy: Number;
+  @Validate(CustomNumber)
+  premiumEconomy: String;
 
-  @IsInt()
-  business: Number;
+  @Validate(CustomNumber)
+  business: String;
 
-  @IsInt()
-  first: Number;
+  @Validate(CustomNumber)
+  first: String;
 
   constructor(
     airPlane: ICapacity = {
-      economy: 0,
-      premiumEconomy: 0,
-      business: 0,
-      first: 0
+      economy: "",
+      premiumEconomy: "",
+      business: "",
+      first: ""
     }
   ) {
     this.economy = airPlane.economy,
@@ -51,11 +66,11 @@ export class AirPlane extends Capacity {
   @IsString()
   readonly name: String;
 
-  @IsInt()
-  readonly maxSpeed: Number;
+  @Validate(CustomNumber)
+  readonly maxSpeed: String;
 
-  @IsInt()
-  readonly maxDistance: Number;
+  @Validate(CustomNumber)
+  readonly maxDistance: String;
 
   @MinLength(0)
   @MaxLength(1000)
@@ -67,14 +82,14 @@ export class AirPlane extends Capacity {
   constructor(
     airPlane: IAirPlane = {
       name: "",
-      maxSpeed: 0,
-      maxDistance: 0,
+      maxSpeed: "",
+      maxDistance: "",
       description: "",
       capacity: {
-        economy: 0,
-        premiumEconomy: 0,
-        business: 0,
-        first: 0
+        economy: "",
+        premiumEconomy: "",
+        business: "",
+        first: ""
       }
     }
   ) {

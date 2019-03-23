@@ -2,7 +2,7 @@ import {
     Controller, 
     Get, Query, 
     Param, Body,Post,
-    Delete, Put, Req, UseGuards} from "@nestjs/common";
+    Delete, Put, Req, UseGuards, Res} from "@nestjs/common";
 import { AirPortService } from "./air-port.service";
 import { AuthGuard } from "@nestjs/passport";
 import { AirPort, IAirPort } from "src/interfaces/airport.interface";
@@ -21,6 +21,11 @@ export class AirPortController {
   @Get('list')
   async getAllAirPorts(@Query() query: any): Promise<AirPort[]> {
     return this.airPortService.getAllAirPorts(query);
+  }
+
+  @Get('countries')
+  async getCountries(@Res() res) {
+    return res.sendFile("countries.json", { root: 'src' });
   }
 
   @Get(':id')

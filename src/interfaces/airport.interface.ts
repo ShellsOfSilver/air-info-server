@@ -3,7 +3,7 @@ import {MinLength,MaxLength, IsString} from "class-validator";
 export interface IAirPort {
   readonly name: string;
   readonly description: string;
-  readonly address: string;
+  readonly country: string;
 }
 
 export class AirPort {
@@ -18,20 +18,20 @@ export class AirPort {
     @IsString()
     readonly description: String;
 
-    @MinLength(10)
+    @MinLength(2)
     @MaxLength(128)
     @IsString()
-    readonly address: String;
+    readonly country: String;
 
     constructor(
         airPort: IAirPort = {
             description: "",
-            address: "",
+            country: "",
             name: ""
         }
       ) {
         this.name = airPort.name;
         this.description = airPort.description;
-        this.address = airPort.address;
+        this.country = airPort.country;
       }
 }

@@ -3,11 +3,15 @@ import { AirPlane, IAirPlane } from '../interfaces/airplane.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {validate} from "class-validator";
+import { AirCompany } from 'src/interfaces/air-company.interface';
+import { AirLine } from 'src/interfaces/airline.interface';
 
 @Injectable()
 export class AirPlaneService {
 
-    constructor(@InjectModel('AirPlane') private readonly airPlaneModel: Model<AirPlane>){}
+    constructor(@InjectModel('AirPlane') private readonly airPlaneModel: Model<AirPlane>,
+                @InjectModel('AirCompany') private readonly airCompanyModel: Model<AirCompany>,
+                @InjectModel('AirLine') private readonly airLineModel: Model<AirLine>){}
 
     async createAirPlane(airPlane: IAirPlane, res: any): Promise<AirPlane>{
         await validate(new AirPlane(airPlane)).then(errors => {
@@ -43,8 +47,18 @@ export class AirPlaneService {
         return await this.airPlaneModel.find().exec();
     }
 
+    async checkUses(id: string){
+        const col1 = await this.airLineModel.find({idPlane: id}).exec();
+        const col2 = await this.airCompanyModel.find({listPlanes: id}).exec();
+        if(col1.length > 0 || col2.length > 0){
+            throw new HttpException("in use", 400);
+        } else {
+            return true;
+        }  
+    }
+
     async deleteAirPlane(id: string): Promise<any>{
-        if(this.validId(id)){
+        if(this.validId(id) && await this.checkUses(id)){
             const status = await this.airPlaneModel.deleteOne({_id: id}).exec();
             if(status.n > 0){
                 return Promise.resolve({message: "successful"});

@@ -47,12 +47,12 @@ export class AirLineService {
     }
 
     async getAllAirLines(query: any): Promise<IAirLine[]>{
-        return await this._getAirLines(await this.airLineModel.find().exec());
+        return await this.airLineModel.find().exec();//await this._getAirLines(await this.airLineModel.find().exec());
     }
 
     async getAirLine(id: string): Promise<IAirLine>{
         if(this.validId(id)){
-            return (await this._getAirLines(await this.airLineModel.find({_id: id}).exec()) as Array<any>)[0];
+            return /*(await this._getAirLines(*/await this.airLineModel.find({_id: id}).exec()/*) as Array<any>)*/[0];
         } else {
             throw new HttpException("unknown", 400);
         }

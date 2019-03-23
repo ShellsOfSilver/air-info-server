@@ -22,7 +22,7 @@ export class User {
     @MinLength(2)
     @MaxLength(32)
     @IsString()
-    readonly password: String;
+    readonly password: String; 
     
     @IsEmail()
     readonly email: String;
@@ -38,7 +38,7 @@ export class User {
       this.firstName = user.firstName;
       this.lastName = user.lastName;
       this.password = user.password;
-      this.email = user.email;
+      this.email = user.email; 
     }
   }
-  
+   

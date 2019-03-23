@@ -3,11 +3,14 @@ import { AirCompany, IAirCompany } from '../interfaces/air-company.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {validate} from "class-validator";
+import { AirLine } from 'src/interfaces/airline.interface';
 
 @Injectable()
 export class AirCompanyService {
 
-    constructor(@InjectModel('AirCompany') private readonly airCompanyModel: Model<AirCompany>){}
+    constructor(@InjectModel('AirCompany') private readonly airCompanyModel: Model<AirCompany>,
+                @InjectModel('AirLine') private readonly airLineModel: Model<AirLine>,
+    ){}
 
     async createAirCompany(airCompany: IAirCompany, res: any): Promise<AirCompany>{
         await validate(new AirCompany(airCompany)).then(errors => {
@@ -43,8 +46,17 @@ export class AirCompanyService {
         return await this.airCompanyModel.find().exec();
     }
 
+    async checkUses(id: string){
+        const col = await this.airLineModel.find({idAirCompany: id}).exec();
+        if(col.length > 0){
+            throw new HttpException("in use", 400);
+        } else {
+            return true;
+        }  
+    }
+
     async deleteAirCompany(id: string): Promise<any>{
-        if(this.validId(id)){
+        if(this.validId(id) && await this.checkUses(id)){
             const status = await this.airCompanyModel.deleteOne({_id: id}).exec();
             if(status.n > 0){
                 return Promise.resolve({message: "successful"});
