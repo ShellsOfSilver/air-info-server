@@ -44,7 +44,20 @@ export class AirPortService {
     }
 
     async getAllAirPorts(query: any): Promise<AirPort[]>{
-        return await this.airPortModel.find().exec();
+        const list = await this.airPortModel.find().exec();
+        const newList = [];
+        let col = 0;
+        const filterString = query.filter.toLowerCase();
+        for (let i = 0; i< list.length; i++) {
+            if(JSON.stringify(list[i].name).toLowerCase().indexOf(filterString)>=0){
+                newList.push(list[i]);
+                col++;
+            }else if(JSON.stringify(list[i].country).toLowerCase().indexOf(filterString)>=0){
+                newList.push(list[i]);
+                col++;
+            }
+        }
+        return col > 0?newList: list;
     }
 
     async checkUses(id: string){

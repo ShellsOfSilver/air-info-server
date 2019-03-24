@@ -51,14 +51,42 @@ export class AirLineService {
     }
 
     async getFormAirLines(query: any): Promise<IAirLine[]>{
-        return await this._getAirLines(await this.airLineModel.find().exec());
+        /*let searchRegex = new RegExp(query.filter);
+        var fullTextSearchOptions = {
+            "flights":{
+            "$regex": searchRegex
+            }
+        };
+        return await this._getAirLines(await this.airLineModel.find(fullTextSearchOptions).exec());*/
+        const list = await this._getAirLines(await this.airLineModel.find().exec());
+        const newList = [];
+        let col = 0;
+        const filterString = query.filter.toLowerCase();
+        for (let i = 0; i< list.length; i++) {
+            const to = JSON.parse(JSON.stringify(list[i].direction.toIdAirPort));
+            const from = JSON.parse(JSON.stringify(list[i].direction.fromIdAirPort));
+            if(JSON.stringify(list[i].flights).toLowerCase().indexOf(filterString)>=0){
+                newList.push(list[i]);
+                col++;
+            }else if(to.country.toLowerCase().indexOf(filterString)>=0){
+                newList.push(list[i]);
+                col++;
+            }else if(from.country.toLowerCase().indexOf(filterString)>=0){
+                newList.push(list[i]);
+                col++;
+            }else if(JSON.stringify(list[i].status).toLowerCase().indexOf(filterString)>=0){
+                newList.push(list[i]);
+                col++;
+            }
+        }
+        return col > 0?newList: list;
     }
 
     async getAirLine(id: string): Promise<IAirLine>{
         if(this.validId(id)){
             return (await this._getAirLines(await this.airLineModel.find({_id: id}).exec()) as Array<any>)[0];
         } else {
-            throw new HttpException("unknown", 400);
+            throw new HttpException("unknown", 400);  
         }
     }
 

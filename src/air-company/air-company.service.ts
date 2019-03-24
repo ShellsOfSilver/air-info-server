@@ -51,8 +51,22 @@ export class AirCompanyService {
     }
 
     async getFormAirCompanys(query: any): Promise<AirCompany[]>{
-        const listCompany =  JSON.parse(JSON.stringify(await this.airCompanyModel.find().exec()));
-        
+        let listCompany =  JSON.parse(JSON.stringify(await this.airCompanyModel.find().exec()));
+        const newList = [];
+        let col = 0;
+        const filterString = query.filter.toLowerCase();
+        for (let i = 0; i< listCompany.length; i++) {
+            
+            if(JSON.stringify(listCompany[i].name).toLowerCase().indexOf(filterString)>=0){
+                newList.push(listCompany[i]);
+                col++;
+            }else if(JSON.stringify(listCompany[i].address).toLowerCase().indexOf(filterString)>=0){
+                newList.push(listCompany[i]);
+                col++;
+            }
+        }
+        listCompany = col > 0?newList: listCompany;
+
         for (let i = 0; i< listCompany.length; i++) {
             const newListAirPorts = [];
             for (let j = 0; j< listCompany[i].listAirPorts.length; j++) {
