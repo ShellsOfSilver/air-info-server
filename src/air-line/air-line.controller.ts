@@ -23,6 +23,11 @@ async getAllAirLine(@Query() query: any): Promise<IAirLine[]> {
   return this.airLineService.getAllAirLines(query);
 }
 
+@Get('form')
+async getFormAirLine(@Query() query: any): Promise<IAirLine[]> {
+  return this.airLineService.getFormAirLines(query);
+}
+
 @Get(':id')
 async findAirLine(@Param('id') id: string): Promise<IAirLine> {
   return this.airLineService.getAirLine(id);

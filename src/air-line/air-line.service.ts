@@ -50,9 +50,13 @@ export class AirLineService {
         return await this.airLineModel.find().exec();//await this._getAirLines(await this.airLineModel.find().exec());
     }
 
+    async getFormAirLines(query: any): Promise<IAirLine[]>{
+        return await this._getAirLines(await this.airLineModel.find().exec());
+    }
+
     async getAirLine(id: string): Promise<IAirLine>{
         if(this.validId(id)){
-            return /*(await this._getAirLines(*/await this.airLineModel.find({_id: id}).exec()/*) as Array<any>)*/[0];
+            return (await this._getAirLines(await this.airLineModel.find({_id: id}).exec()) as Array<any>)[0];
         } else {
             throw new HttpException("unknown", 400);
         }
@@ -67,10 +71,10 @@ export class AirLineService {
                 const airPortTo = await this.airPortModel.findOne({_id: netListAirLine[i].direction.toIdAirPort}).exec();
                 const airCompany = await this.airCompanyModel.findOne({_id: netListAirLine[i].idAirCompany}).exec();
                 const airPlane = await this.airPlaneModel.findOne({_id: netListAirLine[i].idPlane}).exec();
-                netListAirLine[i].idPlane = airPlane ? airPlane.name ? airPlane.name : "none" : "none";
-                netListAirLine[i].idAirCompany = airCompany ? airCompany.name ? airCompany.name : "none" : "none";
-                (netListAirLine[i].direction as IDirection).fromIdAirPort = airPortFrom ? airPortFrom.name ? airPortFrom.name : "none" : "none";
-                (netListAirLine[i].direction as IDirection).toIdAirPort = airPortTo ? airPortTo.name ? airPortTo.name : "none" : "none";    
+                netListAirLine[i].idPlane = airPlane;
+                netListAirLine[i].idAirCompany = airCompany;
+                (netListAirLine[i].direction as IDirection).fromIdAirPort = airPortFrom;
+                (netListAirLine[i].direction as IDirection).toIdAirPort = airPortTo;    
             }
             return netListAirLine;  
         }

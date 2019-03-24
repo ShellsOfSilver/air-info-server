@@ -23,6 +23,11 @@ async getAllAirCompany(@Query() query: any): Promise<AirCompany[]> {
   return this.airCompanyService.getAllAirCompanys(query);
 }
 
+@Get('form')
+async getFormAirCompany(@Query() query: any): Promise<AirCompany[]> {
+  return this.airCompanyService.getFormAirCompanys(query);
+}
+
 @Get(':id')
 async findAirCompany(@Param('id') id: string): Promise<AirCompany> {
   return this.airCompanyService.getAirCompany(id);

@@ -4,12 +4,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {validate} from "class-validator";
 import { AirLine } from 'src/interfaces/airline.interface';
+import { AirPort } from 'src/interfaces/airport.interface';
+import { AirPlane } from 'src/interfaces/airplane.interface';
 
 @Injectable()
 export class AirCompanyService {
 
     constructor(@InjectModel('AirCompany') private readonly airCompanyModel: Model<AirCompany>,
                 @InjectModel('AirLine') private readonly airLineModel: Model<AirLine>,
+                @InjectModel('AirPlane') private readonly airPlaneModel: Model<AirPlane>,
+                @InjectModel('AirPort') private readonly airPortModel: Model<AirPort>,
     ){}
 
     async createAirCompany(airCompany: IAirCompany, res: any): Promise<AirCompany>{
@@ -46,6 +50,30 @@ export class AirCompanyService {
         return await this.airCompanyModel.find().exec();
     }
 
+    async getFormAirCompanys(query: any): Promise<AirCompany[]>{
+        const listCompany =  JSON.parse(JSON.stringify(await this.airCompanyModel.find().exec()));
+        
+        for (let i = 0; i< listCompany.length; i++) {
+            const newListAirPorts = [];
+            for (let j = 0; j< listCompany[i].listAirPorts.length; j++) {
+                const item = await this.airPortModel.findOne({_id: listCompany[i].listAirPorts[j]}).exec();
+                newListAirPorts.push(item);
+            }
+            listCompany[i].listAirPorts = newListAirPorts;
+        }
+
+        for (let i = 0; i< listCompany.length; i++) {
+            const newListAirPorts = [];
+            for (let j = 0; j< listCompany[i].listPlanes.length; j++) {
+                const item = await this.airPlaneModel.findOne({_id: listCompany[i].listPlanes[j]}).exec();
+                newListAirPorts.push(item);
+            }
+            listCompany[i].listPlanes = newListAirPorts;
+        }
+
+        return listCompany;
+    }
+
     async checkUses(id: string){
         const col = await this.airLineModel.find({idAirCompany: id}).exec();
         if(col.length > 0){
@@ -70,7 +98,24 @@ export class AirCompanyService {
 
     async getAirCompany(id: string): Promise<AirCompany>{
         if(this.validId(id)){
-            return await this.airCompanyModel.find({_id: id}).exec();
+            const listCompany =  JSON.parse(JSON.stringify(await this.airCompanyModel.find({_id: id}).exec()));
+            for (let i = 0; i< listCompany.length; i++) {
+                const newListAirPorts = [];
+                for (let j = 0; j< listCompany[i].listAirPorts.length; j++) {
+                    const item = await this.airPortModel.findOne({_id: listCompany[i].listAirPorts[j]}).exec();
+                    newListAirPorts.push(item);
+                }
+                listCompany[i].listAirPorts = newListAirPorts;
+            }
+            for (let i = 0; i< listCompany.length; i++) {
+                const newListAirPorts = [];
+                for (let j = 0; j< listCompany[i].listPlanes.length; j++) {
+                    const item = await this.airPlaneModel.findOne({_id: listCompany[i].listPlanes[j]}).exec();
+                    newListAirPorts.push(item);
+                }
+                listCompany[i].listPlanes = newListAirPorts;
+            }
+            return listCompany;
         } else {
             throw new HttpException("unknown", 400);
         }
